@@ -427,17 +427,17 @@
    respondientes: {estudiantes: N, docentes: N}
 ===================================================================== */
 const RUBRICA = {
-  respondientes: { estudiantes: 0, docentes: 0 },
+  respondientes: { estudiantes: 18, docentes: 0 },
   criterios: [
-    ["Diseño pedagógico",            [0, 0, 0]],
-    ["Usabilidad",                   [0, 0, 0]],
-    ["Contenido",                    [0, 0, 0]],
-    ["Tecnología empleada",          [0, 0, 0]],
-    ["Potencial transformador",      [0, 0, 0]],
-    ["Interactividad",               [0, 0, 0]],
-    ["Accesibilidad",                [0, 0, 0]],
-    ["Sostenibilidad y escalabilidad",[0, 0, 0]],
-    ["Valor agregado",               [0, 0, 0]],
+    ["Diseño pedagógico",            [6, 12, 0]],
+    ["Usabilidad",                   [6, 11, 1]],
+    ["Contenido",                    [7, 11, 0]],
+    ["Tecnología empleada",          [9, 9, 0]],
+    ["Potencial transformador",      [6, 12, 0]],
+    ["Interactividad",               [5, 13, 0]],
+    ["Accesibilidad",                [7, 10, 1]],
+    ["Sostenibilidad y escalabilidad",[6, 12, 0]],
+    ["Valor agregado",               [7, 10, 1]],
   ]
 };
 
@@ -496,10 +496,11 @@ function drawChart(){
   const hayDatos = RUBRICA.criterios.some(([,v]) => v[0] + v[1] + v[2] > 0);
 
   kpis.style.display = hayDatos ? '' : 'none';
+  const doc = RUBRICA.respondientes.docentes;
   kpis.innerHTML = `
-    <div class="k"><b>${RUBRICA.respondientes.estudiantes}</b><span>estudiantes</span></div>
-    <div class="k"><b>${RUBRICA.respondientes.docentes}</b><span>docentes</span></div>
-    <div class="k"><b>${pctExcelente()}%</b><span>valoraciones "Excelente"</span></div>`;
+    <div class="k"><b>${RUBRICA.respondientes.estudiantes}</b><span>rúbricas de estudiantes</span></div>
+    ${doc ? `<div class="k"><b>${doc}</b><span>rúbricas de docentes</span></div>` : ''}
+    <div class="k"><b>${pctPositivo()}%</b><span>valoró Bueno o Excelente</span></div>`;
 
   pending.hidden = hayDatos;
   chart.style.display = hayDatos ? '' : 'none';
@@ -521,10 +522,10 @@ function drawChart(){
   requestAnimationFrame(() => requestAnimationFrame(() =>
     chart.querySelectorAll('.seg').forEach(s => s.style.width = s.dataset.w + '%')));
 }
-function pctExcelente(){
-  let e = 0, t = 0;
-  RUBRICA.criterios.forEach(([,v]) => { e += v[0]; t += v[0] + v[1] + v[2]; });
-  return t ? Math.round(e / t * 100) : 0;
+function pctPositivo(){
+  let p = 0, t = 0;
+  RUBRICA.criterios.forEach(([,v]) => { p += v[0] + v[1]; t += v[0] + v[1] + v[2]; });
+  return t ? Math.round(p / t * 100) : 0;
 }
 
 go(i);
