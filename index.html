@@ -1,0 +1,526 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>RED con Tecnologías Emergentes — Entregable 2 · Jorge Luis Rojas</title>
+<meta name="description" content="Presentación interactiva: formulaciones hipotéticas, reflexión crítica e informe de implementación de un recurso educativo digital. Maestría en Tecnologías Digitales Aplicadas a la Educación, UDES.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,300;12..96,450;12..96,550;12..96,700;12..96,800&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg: oklch(0.165 0.012 355);
+    --surface: oklch(0.215 0.016 355);
+    --surface-2: oklch(0.255 0.018 355);
+    --line: oklch(0.34 0.02 355);
+    --ink: oklch(0.955 0.006 355);
+    --ink-soft: oklch(0.78 0.014 355);
+    --brand: oklch(0.63 0.19 355);
+    --brand-bright: oklch(0.72 0.17 355);
+    --violet: oklch(0.68 0.11 300);
+    --ok-e: oklch(0.72 0.17 355);   /* Excelente */
+    --ok-b: oklch(0.62 0.08 340);   /* Bueno */
+    --ok-r: oklch(0.48 0.015 355);  /* Regular */
+    --radius: 14px;
+    --ease: cubic-bezier(.16,1,.3,1);
+  }
+  *{margin:0;padding:0;box-sizing:border-box}
+  html,body{height:100%}
+  body{
+    background:var(--bg); color:var(--ink);
+    font-family:"Bricolage Grotesque", system-ui, sans-serif;
+    font-weight:450; font-size:clamp(15px,1.35vw,18px); line-height:1.55;
+    overflow:hidden;
+  }
+  ::selection{background:var(--brand); color:oklch(0.98 0 0)}
+
+  .deck{position:fixed; inset:0}
+  .slide{
+    position:absolute; inset:0; display:flex; flex-direction:column; justify-content:center;
+    padding:clamp(1.4rem,4vw,4.5rem) clamp(1.2rem,7vw,7.5rem) clamp(4.2rem,7vh,5.5rem);
+    opacity:0; visibility:hidden; transform:translateY(22px);
+    transition:opacity .55s var(--ease), transform .55s var(--ease), visibility 0s .55s;
+    overflow-y:auto;
+  }
+  .slide.active{opacity:1; visibility:visible; transform:none; transition-delay:0s}
+
+  h1,h2,h3{font-weight:800; letter-spacing:-0.025em; text-wrap:balance; line-height:1.06}
+  h1{font-size:clamp(2.1rem,5.6vw,4.6rem)}
+  h2{font-size:clamp(1.7rem,3.8vw,3rem); margin-bottom:clamp(1rem,2.6vh,1.8rem)}
+  h3{font-size:clamp(1.05rem,1.7vw,1.35rem); letter-spacing:-0.01em; line-height:1.25}
+  p{max-width:68ch}
+  .soft{color:var(--ink-soft)}
+  .brand{color:var(--brand-bright)}
+  em{font-style:normal; color:var(--brand-bright)}
+
+  .kicker{
+    display:inline-flex; align-items:center; gap:.6rem;
+    font-weight:550; color:var(--brand-bright); margin-bottom:1.1rem;
+  }
+  .kicker::before{content:""; width:2.2rem; height:2px; background:var(--brand)}
+
+  /* ---------- Portada ---------- */
+  .cover{justify-content:flex-end}
+  .cover .modulo{font-weight:550; color:var(--brand-bright); margin-bottom:.9rem; font-size:clamp(.95rem,1.4vw,1.15rem)}
+  .cover h1 span{display:block; color:var(--ink-soft); font-weight:300; font-size:.52em; letter-spacing:0; margin-top:.55rem; line-height:1.3}
+  .cover .meta{
+    margin-top:clamp(1.6rem,4vh,2.6rem); padding-top:1.3rem; border-top:1px solid var(--line);
+    display:flex; flex-wrap:wrap; gap:.35rem 2.8rem; color:var(--ink-soft);
+  }
+  .cover .meta strong{color:var(--ink); font-weight:550; display:block}
+  .hint{position:absolute; top:clamp(1.2rem,4vh,2.5rem); right:clamp(1.2rem,7vw,7.5rem); color:var(--ink-soft); font-size:.85rem}
+  kbd{border:1px solid var(--line); border-radius:6px; padding:.1rem .45rem; font-family:inherit; background:var(--surface)}
+
+  /* ---------- Agenda ---------- */
+  .agenda{display:grid; gap:.4rem; max-width:56rem; counter-reset:ag}
+  .agenda button{
+    all:unset; cursor:pointer; counter-increment:ag;
+    display:grid; grid-template-columns:3rem 1fr auto; align-items:baseline; gap:1rem;
+    padding:.85rem 1.1rem; border-radius:10px; transition:background .2s;
+  }
+  .agenda button::before{content:counter(ag,decimal-leading-zero); color:var(--brand-bright); font-weight:700}
+  .agenda button:hover,.agenda button:focus-visible{background:var(--surface)}
+  .agenda button .t{font-weight:550; font-size:clamp(1rem,1.9vw,1.45rem); letter-spacing:-0.015em}
+  .agenda button .d{color:var(--ink-soft); font-size:.9em}
+
+  /* ---------- Bloques genéricos ---------- */
+  .cols{display:grid; grid-template-columns:repeat(auto-fit,minmax(270px,1fr)); gap:clamp(1rem,2.2vw,2rem); align-items:start}
+  .panel{background:var(--surface); border-radius:var(--radius); padding:clamp(1.1rem,2vw,1.7rem)}
+  .panel h3{margin-bottom:.55rem}
+  .panel + .panel{margin-top:1rem}
+  ul.clean{list-style:none; display:grid; gap:.65rem}
+  ul.clean li{padding-left:1.35rem; position:relative}
+  ul.clean li::before{content:""; position:absolute; left:0; top:.58em; width:.55rem; height:2px; background:var(--brand-bright)}
+  .big-claim{
+    font-size:clamp(1.25rem,2.6vw,2.05rem); font-weight:550; letter-spacing:-0.02em;
+    line-height:1.3; max-width:34ch; text-wrap:balance;
+  }
+  .steps{display:grid; gap:0; max-width:60rem}
+  .step{display:grid; grid-template-columns:2.6rem 1fr; gap:1.1rem; padding:.9rem 0; border-bottom:1px solid var(--line)}
+  .step:last-child{border-bottom:none}
+  .step b{color:var(--brand-bright); font-weight:700; font-size:1.15rem}
+  .step p{color:var(--ink-soft)} .step strong{color:var(--ink); font-weight:550}
+
+  /* ---------- Tabs RED ---------- */
+  .tabs{display:flex; gap:.5rem; flex-wrap:wrap; margin-bottom:1.2rem}
+  .tabs button{
+    all:unset; cursor:pointer; padding:.55rem 1.15rem; border-radius:999px;
+    background:var(--surface); color:var(--ink-soft); font-weight:550; transition:all .2s;
+  }
+  .tabs button[aria-selected="true"]{background:var(--brand); color:oklch(0.98 0 0)}
+  .tabs button:focus-visible{outline:2px solid var(--brand-bright); outline-offset:2px}
+  .tabpanel{display:none}
+  .tabpanel.show{display:block; animation:rise .45s var(--ease)}
+  @keyframes rise{from{opacity:0; transform:translateY(10px)}to{opacity:1; transform:none}}
+  .veredicto{
+    margin-top:1rem; padding:.9rem 1.15rem; border-radius:10px;
+    background:oklch(0.63 0.19 355 / .13); color:var(--ink);
+  }
+  .veredicto b{color:var(--brand-bright)}
+
+  /* ---------- Gráfico rúbrica ---------- */
+  .chart{display:grid; gap:.55rem; max-width:62rem}
+  .row{display:grid; grid-template-columns:minmax(9.5rem,13rem) 1fr; gap:1rem; align-items:center}
+  .row .lbl{font-size:.92rem; color:var(--ink-soft); text-align:right}
+  .bar{display:flex; height:1.7rem; border-radius:7px; overflow:hidden; background:var(--surface)}
+  .seg{width:0; transition:width 1s var(--ease); display:flex; align-items:center; justify-content:center; font-size:.8rem; font-weight:700; color:oklch(0.99 0 0)}
+  .seg.e{background:var(--ok-e)} .seg.b{background:var(--ok-b)} .seg.r{background:var(--ok-r)}
+  .legend{display:flex; gap:1.6rem; margin:.9rem 0 1.4rem; color:var(--ink-soft); font-size:.92rem}
+  .legend span{display:inline-flex; align-items:center; gap:.5rem}
+  .dot{width:.85rem; height:.85rem; border-radius:4px; display:inline-block}
+  .pending{
+    background:var(--surface); border-radius:var(--radius); padding:1.1rem 1.4rem;
+    color:var(--ink-soft); max-width:62rem;
+  }
+  .kpis{display:flex; gap:clamp(1.4rem,4vw,3.5rem); flex-wrap:wrap; margin-bottom:1.4rem}
+  .kpis .k b{font-size:clamp(1.9rem,3.6vw,3rem); font-weight:800; letter-spacing:-0.03em; color:var(--brand-bright); display:block; line-height:1.1}
+  .kpis .k span{color:var(--ink-soft)}
+
+  /* ---------- Cierre ---------- */
+  .links a{color:var(--brand-bright); text-decoration:none; border-bottom:1px solid oklch(0.63 0.19 355/.45)}
+  .links a:hover{border-bottom-color:var(--brand-bright)}
+
+  /* ---------- Navegación ---------- */
+  .nav{
+    position:fixed; left:0; right:0; bottom:0; display:flex; align-items:center;
+    justify-content:space-between; padding:.8rem clamp(1.2rem,7vw,7.5rem);
+    background:linear-gradient(to top, oklch(0.165 0.012 355) 30%, transparent); z-index:10;
+  }
+  .nav .count{font-weight:550; color:var(--ink-soft); font-variant-numeric:tabular-nums}
+  .nav .count b{color:var(--ink)}
+  .nav .btns{display:flex; gap:.5rem}
+  .nav button{
+    all:unset; cursor:pointer; width:2.7rem; height:2.7rem; border-radius:50%;
+    background:var(--surface); display:grid; place-items:center; font-size:1.15rem;
+    transition:background .2s; color:var(--ink);
+  }
+  .nav button:hover{background:var(--brand); color:oklch(0.98 0 0)}
+  .nav button:disabled{opacity:.3; cursor:default; background:var(--surface)}
+  .progress{position:fixed; top:0; left:0; height:3px; background:var(--brand); z-index:11; transition:width .45s var(--ease)}
+
+  @media (max-width:720px){
+    .slide{justify-content:flex-start; padding-top:2.2rem}
+    .hint{display:none}
+    .row{grid-template-columns:1fr; gap:.25rem}
+    .row .lbl{text-align:left}
+  }
+  @media (prefers-reduced-motion: reduce){
+    *{transition-duration:.01ms !important; animation-duration:.01ms !important}
+  }
+</style>
+</head>
+<body>
+
+<div class="progress" id="progress"></div>
+
+<main class="deck" id="deck">
+
+  <!-- 1 · Portada -->
+  <section class="slide cover" aria-label="Portada">
+    <p class="hint">Navega con <kbd>←</kbd> <kbd>→</kbd> o los botones</p>
+    <p class="modulo">Elaboración de Recursos Educativos Digitales con Tecnologías Emergentes · Entregable 2</p>
+    <h1>Del recurso a la evidencia
+      <span>Formulaciones hipotéticas, reflexión crítica e informe de implementación de un RED</span>
+    </h1>
+    <div class="meta">
+      <p><strong>Jorge Luis Rojas Sandoval</strong>Docente · IED Hernán Venegas Carrillo, Tocaima</p>
+      <p><strong>Universidad de Santander — UDES</strong>Maestría en Tecnologías Digitales Aplicadas a la Educación</p>
+      <p><strong>Julio de 2026</strong>Grado 1002 · Media Técnica · Articulación SENA</p>
+    </div>
+  </section>
+
+  <!-- 2 · Agenda -->
+  <section class="slide" aria-label="Ruta de la presentación">
+    <p class="kicker">Ruta</p>
+    <h2>Tres movimientos, una pregunta</h2>
+    <p class="soft" style="margin-bottom:1.4rem">¿Cuándo un recurso digital mejora de verdad el aprendizaje — y cómo lo comprobamos?</p>
+    <div class="agenda">
+      <button data-go="2"><span class="t">Punto de partida</span><span class="d">la intencionalidad pedagógica</span></button>
+      <button data-go="3"><span class="t">Formulación hipotética 1</span><span class="d">Matemáticas + aprendizaje adaptativo</span></button>
+      <button data-go="4"><span class="t">Formulación hipotética 2</span><span class="d">Ciencias Naturales + realidad aumentada</span></button>
+      <button data-go="5"><span class="t">Reflexión crítica</span><span class="d">los tres RED del primer entregable, a examen</span></button>
+      <button data-go="7"><span class="t">Informe de implementación</span><span class="d">la guía en el aula real del grado 1002</span></button>
+      <button data-go="8"><span class="t">Resultados de la rúbrica</span><span class="d">lo que dijeron estudiantes y docentes</span></button>
+      <button data-go="10"><span class="t">Conclusiones</span><span class="d">lo que cambia en mi práctica</span></button>
+    </div>
+  </section>
+
+  <!-- 3 · Punto de partida -->
+  <section class="slide" aria-label="Punto de partida">
+    <p class="kicker">Punto de partida</p>
+    <h2>El recurso no es el fin</h2>
+    <p class="big-claim" style="margin-bottom:1.6rem">Un RED vale por la <em>intencionalidad pedagógica</em> que lo sostiene, no por la tecnología que lo envuelve.</p>
+    <div class="cols">
+      <div class="panel">
+        <h3>Lo que orienta el video <i>Recursos digitales</i></h3>
+        <ul class="clean">
+          <li>El recurso se elige <strong>después</strong> de definir el objetivo de aprendizaje, nunca antes.</li>
+          <li>Cada recurso tiene una intencionalidad: informar, ejercitar, evaluar, crear. Usarlo fuera de ella lo vuelve decorativo.</li>
+          <li>El docente no es reemplazado: es quien da sentido, contexto y mediación al recurso.</li>
+        </ul>
+      </div>
+      <div class="panel">
+        <h3>Lo que aprendí del primer entregable</h3>
+        <ul class="clean">
+          <li>Ningún RED es suficiente por sí solo: IA para crear, Java X para consolidar, Blooket para evaluar.</li>
+          <li>La evidencia importa: el caso griego (Lampropoulos y Sidiropoulos, 2024) mostró mejoras medibles, no promesas.</li>
+          <li>El contexto manda: en Tocaima, el celular Android es el computador que sí está en todos los bolsillos.</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <!-- 4 · Formulación 1 -->
+  <section class="slide" aria-label="Formulación hipotética 1">
+    <p class="kicker">Formulación hipotética 1 · Matemáticas</p>
+    <h2>Ruta adaptativa de nivelación matemática</h2>
+    <div class="cols">
+      <div>
+        <p class="soft" style="margin-bottom:1rem"><strong style="color:var(--ink)">Tecnología emergente:</strong> plataformas de aprendizaje adaptativo con analítica de aprendizaje (tipo Khan Academy, gratuita y en español).</p>
+        <p class="big-claim">Si cada estudiante practica exactamente en su nivel, con retroalimentación inmediata, la brecha de prerrequisitos se cierra <em>sin frenar al grupo</em>.</p>
+      </div>
+      <div class="steps">
+        <div class="step"><b>1</b><p><strong>Diagnóstico adaptativo</strong> al iniciar el periodo: la plataforma ubica a cada estudiante en su nivel real, no en el del grado.</p></div>
+        <div class="step"><b>2</b><p><strong>Ruta personalizada</strong>: cada quien recibe ejercicios de su zona de desarrollo próximo; los videos explicativos suplen la ausencia de apoyo en casa.</p></div>
+        <div class="step"><b>3</b><p><strong>Analítica para el docente</strong>: el tablero muestra quién domina qué competencia y permite reagrupar la clase por necesidades, no por lista.</p></div>
+        <div class="step"><b>4</b><p><strong>Evaluación de eficacia</strong>: comparación pre/post con preguntas tipo Saber y seguimiento de la brecha entre el nivel esperado y el alcanzado.</p></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 5 · Formulación 2 -->
+  <section class="slide" aria-label="Formulación hipotética 2">
+    <p class="kicker">Formulación hipotética 2 · Ciencias Naturales</p>
+    <h2>Laboratorio aumentado de biología</h2>
+    <div class="cols">
+      <div>
+        <p class="soft" style="margin-bottom:1rem"><strong style="color:var(--ink)">Tecnología emergente:</strong> realidad aumentada (RA) en teléfonos Android con aplicaciones gratuitas de visualización 3D.</p>
+        <p class="big-claim">La RA vuelve manipulable lo que el colegio rural no puede mostrar: la célula, los órganos, lo <em>invisible</em>.</p>
+      </div>
+      <div class="steps">
+        <div class="step"><b>1</b><p><strong>Exploración 3D en el aula</strong>: los estudiantes proyectan sobre su mesa modelos de célula, sistemas del cuerpo humano y moléculas, los rotan y los diseccionan desde el celular.</p></div>
+        <div class="step"><b>2</b><p><strong>Salida de campo aumentada</strong>: fichas digitales de especies del bosque seco tropical de Tocaima; la RA superpone información científica sobre el entorno real.</p></div>
+        <div class="step"><b>3</b><p><strong>Creación, no solo consumo</strong>: cada equipo arma su propia exposición aumentada para estudiantes de primaria — el creador aprende dos veces.</p></div>
+        <div class="step"><b>4</b><p><strong>Evaluación de eficacia</strong>: rúbrica de comprensión conceptual antes y después, y observación del uso del vocabulario científico en las exposiciones.</p></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 6 · Reflexión crítica -->
+  <section class="slide" aria-label="Reflexión crítica">
+    <p class="kicker">Reflexión crítica</p>
+    <h2>¿Cuándo se justifica un RED?</h2>
+    <p class="big-claim" style="margin-bottom:1.5rem">La tecnología emergente <em>no mejora</em> el aprendizaje. Lo mejora el diseño didáctico que la pone a trabajar.</p>
+    <div class="cols">
+      <div class="panel">
+        <h3>Se justifica cuando…</h3>
+        <ul class="clean">
+          <li>Responde a un objetivo de aprendizaje definido antes de elegir la herramienta.</li>
+          <li>Hace posible algo que sin ella no ocurre: retroalimentación inmediata, práctica ilimitada, visualización de lo abstracto.</li>
+          <li>Es accesible desde los dispositivos que los estudiantes realmente tienen.</li>
+          <li>Su efecto se puede verificar: notas, retención, evidencias, percepción.</li>
+        </ul>
+      </div>
+      <div class="panel">
+        <h3>No se justifica cuando…</h3>
+        <ul class="clean">
+          <li>Es novedad por la novedad: motiva dos semanas y luego se apaga.</li>
+          <li>Sustituye el pensamiento en lugar de andamiarlo — el riesgo real de la IA generativa sin mediación.</li>
+          <li>Evalúa solo memoria y se presenta como si midiera comprensión.</li>
+          <li>Excluye a quienes no tienen el dispositivo o la conexión que exige.</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <!-- 7 · Los tres RED a examen -->
+  <section class="slide" aria-label="Evaluación de los tres RED">
+    <p class="kicker">Postura crítica</p>
+    <h2>Los tres RED del primer entregable, a examen</h2>
+    <div class="tabs" role="tablist">
+      <button role="tab" aria-selected="true" data-tab="t1">IA Generativa Multimodelo</button>
+      <button role="tab" aria-selected="false" data-tab="t2">Java X</button>
+      <button role="tab" aria-selected="false" data-tab="t3">Blooket</button>
+    </div>
+    <div class="tabpanel show" id="t1">
+      <div class="cols">
+        <div class="panel"><h3>¿Contribuye al aprendizaje?</h3><p class="soft">Sí, cuando el estudiante analiza y modifica el código generado. Los proyectos para microempresarios de Tocaima demostraron transferencia real: la IA fue andamio, no atajo.</p></div>
+        <div class="panel"><h3>El riesgo honesto</h3><p class="soft">Sin mediación docente, el estudiante entrega código que no comprende. La revisión crítica debe ser parte obligatoria de la actividad, no un paso opcional.</p></div>
+      </div>
+      <p class="veredicto"><b>Veredicto:</b> uso justificado, con mediación docente fuerte y actividades donde explicar el código valga tanto como producirlo.</p>
+    </div>
+    <div class="tabpanel" id="t2">
+      <div class="cols">
+        <div class="panel"><h3>¿Contribuye al aprendizaje?</h3><p class="soft">Sí, como refuerzo autónomo: la sintaxis de Java es transferible a JavaScript y la práctica móvil llega donde no hay computador. El check de lección completada da evidencia verificable.</p></div>
+        <div class="panel"><h3>El riesgo honesto</h3><p class="soft">Solo Android, sin trabajo colaborativo, y practicar en la app no garantiza transferir: por eso la guía exige resolver casos sin la app antes de darlos por aprendidos.</p></div>
+      </div>
+      <p class="veredicto"><b>Veredicto:</b> uso justificado en un rol acotado — consolidar lógica extraclase, nunca sustituir la aplicación en contexto real.</p>
+    </div>
+    <div class="tabpanel" id="t3">
+      <div class="cols">
+        <div class="panel"><h3>¿Contribuye al aprendizaje?</h3><p class="soft">Sí, y con respaldo empírico: el estudio longitudinal de Lampropoulos y Sidiropoulos (2024, n = 1.001) reporta +13 % en tasa de éxito y +23 % en excelencia frente al modelo tradicional.</p></div>
+        <div class="panel"><h3>El riesgo honesto</h3><p class="soft">Evalúa sobre todo reconocimiento y recuerdo — niveles bajos de Bloom. Presentarlo como única evaluación sería medir memoria y llamarla comprensión.</p></div>
+      </div>
+      <p class="veredicto"><b>Veredicto:</b> uso justificado al cierre de la unidad, cuando el andamiaje conceptual ya existe y el juego valida — no inaugura — el aprendizaje.</p>
+    </div>
+  </section>
+
+  <!-- 8 · Implementación -->
+  <section class="slide" aria-label="Informe de implementación">
+    <p class="kicker">Informe de implementación</p>
+    <h2>La guía, en el aula real</h2>
+    <div class="cols">
+      <div>
+        <p class="soft" style="margin-bottom:1.1rem"><strong style="color:var(--ink)">El RED:</strong> guía de estructuras de control publicada en el blog <span class="brand">ticsherveca.blogspot.com</span>, articulada con práctica en PSeInt/Java X y evaluación gamificada en Blooket. Grado 1002 · 34 estudiantes aprox.</p>
+        <ul class="clean">
+          <li><strong>Abril 2026 · 2.º periodo:</strong> condicionales y operadores lógicos — frases si-entonces, algoritmos de mayoría de edad, calificaciones, login y becas.</li>
+          <li><strong>Julio 2026 · 3.er periodo:</strong> ciclos — algoritmo con <i>mientras</i> y validación de clave, con capturas como evidencia.</li>
+          <li><strong>Gamificación:</strong> sesiones Blooket con banco de preguntas aleatorias y nota real.</li>
+        </ul>
+      </div>
+      <div class="steps">
+        <div class="step"><b>✓</b><p><strong>Funciona:</strong> el blog carga en cualquier dispositivo con navegador, sin instalación ni cuenta; las entradas y actividades están activas y enlazadas.</p></div>
+        <div class="step"><b>✓</b><p><strong>Se usa:</strong> los estudiantes desarrollaron los algoritmos propuestos y suben capturas como evidencia del trabajo.</p></div>
+        <div class="step"><b>?</b><p><strong>¿Es eficaz?</strong> Eso no se declara: se mide. Rúbrica de 9 criterios diligenciada por estudiantes y docentes que usaron el recurso.</p></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 9 · Resultados rúbrica -->
+  <section class="slide" aria-label="Resultados de la rúbrica" id="slide-rubrica">
+    <p class="kicker">Evaluación del RED</p>
+    <h2>Lo que dijo la rúbrica</h2>
+    <div class="kpis" id="kpis"></div>
+    <div class="legend">
+      <span><i class="dot" style="background:var(--ok-e)"></i>Excelente</span>
+      <span><i class="dot" style="background:var(--ok-b)"></i>Bueno</span>
+      <span><i class="dot" style="background:var(--ok-r)"></i>Regular</span>
+    </div>
+    <div class="chart" id="chart" role="img" aria-label="Resultados de la rúbrica por criterio"></div>
+    <div class="pending" id="pending" hidden>
+      <p><strong style="color:var(--ink)">Recolección en curso.</strong> La rúbrica fue enviada a estudiantes y docentes mediante formulario digital; esta lámina se actualiza automáticamente al consolidar las respuestas.</p>
+    </div>
+  </section>
+
+  <!-- 10 · Hallazgos -->
+  <section class="slide" aria-label="Hallazgos y mejoras">
+    <p class="kicker">Hallazgos</p>
+    <h2>Qué mejora y qué se queda</h2>
+    <div class="cols">
+      <div class="panel">
+        <h3>Se queda</h3>
+        <ul class="clean" id="hallazgos-fortalezas">
+          <li>La secuencia de lo cotidiano al código: reduce la percepción de dificultad y sostiene la tasa de éxito.</li>
+          <li>El blog como repositorio de evidencias: trazabilidad para estudiantes, familias y tutores SENA.</li>
+          <li>Blooket con preguntas aleatorias: evaluación formativa sin copia y con motivación real.</li>
+        </ul>
+      </div>
+      <div class="panel">
+        <h3>Se ajusta</h3>
+        <ul class="clean" id="hallazgos-mejoras">
+          <li>Enriquecer las entradas del blog con ejemplos resueltos y video corto por tema.</li>
+          <li>Plan alterno sin conectividad: guía imprimible y práctica offline en PSeInt.</li>
+          <li>Subir el nivel cognitivo: retos de creación de algoritmos propios, no solo resolución de casos dados.</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <!-- 11 · Conclusiones -->
+  <section class="slide" aria-label="Conclusiones">
+    <p class="kicker">Conclusiones</p>
+    <h2>Lo que cambia en mi práctica</h2>
+    <div class="steps" style="margin-bottom:1.6rem">
+      <div class="step"><b>1</b><p><strong>La intencionalidad es el filtro.</strong> Primero el objetivo, después la herramienta: todo recurso que no pase ese orden es decoración digital.</p></div>
+      <div class="step"><b>2</b><p><strong>Imaginar fuera del área propia amplía la mirada.</strong> Formular hipótesis para Matemáticas y Ciencias obliga a pensar la tecnología desde la necesidad pedagógica, no desde la costumbre.</p></div>
+      <div class="step"><b>3</b><p><strong>Implementar es medir.</strong> Un RED no está terminado cuando se publica sino cuando la evidencia — rúbricas, resultados, evidencias en el blog — confirma que facilita el aprendizaje.</p></div>
+      <div class="step"><b>4</b><p><strong>El contexto decide.</strong> En Tocaima, la mejor tecnología emergente es la que cabe en el bolsillo del estudiante y funciona con la conectividad que hay.</p></div>
+    </div>
+    <p class="links soft">
+      Recurso implementado: <a href="https://ticsherveca.blogspot.com" target="_blank" rel="noopener">ticsherveca.blogspot.com</a>
+      &nbsp;·&nbsp; Jorge Luis Rojas Sandoval · UDES · 2026
+    </p>
+  </section>
+
+</main>
+
+<nav class="nav" aria-label="Navegación de láminas">
+  <p class="count"><b id="cur">01</b> / <span id="tot">11</span></p>
+  <div class="btns">
+    <button id="prev" aria-label="Lámina anterior">←</button>
+    <button id="next" aria-label="Lámina siguiente">→</button>
+  </div>
+</nav>
+
+<script>
+/* =====================================================================
+   DATOS DE LA RÚBRICA — actualizar aquí al consolidar el Google Form.
+   Cada criterio: [Excelente, Bueno, Regular] (número de respuestas).
+   respondientes: {estudiantes: N, docentes: N}
+===================================================================== */
+const RUBRICA = {
+  respondientes: { estudiantes: 0, docentes: 0 },
+  criterios: [
+    ["Diseño pedagógico",            [0, 0, 0]],
+    ["Usabilidad",                   [0, 0, 0]],
+    ["Contenido",                    [0, 0, 0]],
+    ["Tecnología empleada",          [0, 0, 0]],
+    ["Potencial transformador",      [0, 0, 0]],
+    ["Interactividad",               [0, 0, 0]],
+    ["Accesibilidad",                [0, 0, 0]],
+    ["Sostenibilidad y escalabilidad",[0, 0, 0]],
+    ["Valor agregado",               [0, 0, 0]],
+  ]
+};
+
+/* ---------- Deck ---------- */
+const slides = [...document.querySelectorAll('.slide')];
+const cur = document.getElementById('cur'), tot = document.getElementById('tot');
+const prev = document.getElementById('prev'), next = document.getElementById('next');
+const progress = document.getElementById('progress');
+let i = Math.min(Math.max(parseInt(location.hash.slice(2)) || 0, 0), slides.length - 1);
+tot.textContent = String(slides.length).padStart(2, '0');
+
+function go(n){
+  i = Math.min(Math.max(n, 0), slides.length - 1);
+  slides.forEach((s, k) => s.classList.toggle('active', k === i));
+  cur.textContent = String(i + 1).padStart(2, '0');
+  prev.disabled = i === 0; next.disabled = i === slides.length - 1;
+  progress.style.width = ((i + 1) / slides.length * 100) + '%';
+  history.replaceState(null, '', '#/' + i);
+  if (slides[i].id === 'slide-rubrica') drawChart();
+}
+prev.onclick = () => go(i - 1);
+next.onclick = () => go(i + 1);
+addEventListener('keydown', e => {
+  if (['ArrowRight','PageDown',' '].includes(e.key)) { e.preventDefault(); go(i + 1); }
+  if (['ArrowLeft','PageUp'].includes(e.key)) { e.preventDefault(); go(i - 1); }
+  if (e.key === 'Home') go(0);
+  if (e.key === 'End') go(slides.length - 1);
+});
+document.querySelectorAll('[data-go]').forEach(b => b.onclick = () => go(+b.dataset.go));
+
+/* Swipe móvil */
+let x0 = null;
+addEventListener('touchstart', e => x0 = e.touches[0].clientX, {passive:true});
+addEventListener('touchend', e => {
+  if (x0 === null) return;
+  const dx = e.changedTouches[0].clientX - x0;
+  if (Math.abs(dx) > 60) go(i + (dx < 0 ? 1 : -1));
+  x0 = null;
+}, {passive:true});
+
+/* ---------- Tabs ---------- */
+document.querySelectorAll('.tabs [role="tab"]').forEach(t => t.onclick = () => {
+  const tabs = t.closest('.tabs');
+  tabs.querySelectorAll('[role="tab"]').forEach(x => x.setAttribute('aria-selected', x === t));
+  const wrap = tabs.parentElement;
+  wrap.querySelectorAll('.tabpanel').forEach(p => p.classList.toggle('show', p.id === t.dataset.tab));
+});
+
+/* ---------- Gráfico rúbrica ---------- */
+let drawn = false;
+function drawChart(){
+  const chart = document.getElementById('chart');
+  const kpis = document.getElementById('kpis');
+  const pending = document.getElementById('pending');
+  const totalResp = RUBRICA.respondientes.estudiantes + RUBRICA.respondientes.docentes;
+  const hayDatos = RUBRICA.criterios.some(([,v]) => v[0] + v[1] + v[2] > 0);
+
+  kpis.style.display = hayDatos ? '' : 'none';
+  kpis.innerHTML = `
+    <div class="k"><b>${RUBRICA.respondientes.estudiantes}</b><span>estudiantes</span></div>
+    <div class="k"><b>${RUBRICA.respondientes.docentes}</b><span>docentes</span></div>
+    <div class="k"><b>${pctExcelente()}%</b><span>valoraciones "Excelente"</span></div>`;
+
+  pending.hidden = hayDatos;
+  chart.style.display = hayDatos ? '' : 'none';
+  document.querySelector('.legend').style.display = hayDatos ? '' : 'none';
+  if (!hayDatos) return;
+
+  if (!drawn){
+    chart.innerHTML = RUBRICA.criterios.map(([lbl, v], k) => {
+      const n = v[0] + v[1] + v[2] || 1;
+      return `<div class="row"><span class="lbl">${lbl}</span>
+        <div class="bar" aria-label="${lbl}: ${v[0]} excelente, ${v[1]} bueno, ${v[2]} regular">
+          <div class="seg e" data-w="${v[0]/n*100}">${v[0] || ''}</div>
+          <div class="seg b" data-w="${v[1]/n*100}">${v[1] || ''}</div>
+          <div class="seg r" data-w="${v[2]/n*100}">${v[2] || ''}</div>
+        </div></div>`;
+    }).join('');
+    drawn = true;
+  }
+  requestAnimationFrame(() => requestAnimationFrame(() =>
+    chart.querySelectorAll('.seg').forEach(s => s.style.width = s.dataset.w + '%')));
+}
+function pctExcelente(){
+  let e = 0, t = 0;
+  RUBRICA.criterios.forEach(([,v]) => { e += v[0]; t += v[0] + v[1] + v[2]; });
+  return t ? Math.round(e / t * 100) : 0;
+}
+
+go(i);
+</script>
+</body>
+</html>
