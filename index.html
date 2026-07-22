@@ -137,6 +137,62 @@
   .kpis .k b{font-size:clamp(1.9rem,3.6vw,3rem); font-weight:800; letter-spacing:-0.03em; color:var(--brand-bright); display:block; line-height:1.1}
   .kpis .k span{color:var(--ink-soft)}
 
+  /* ---------- Interactivos: demo genérico ---------- */
+  .demo{margin-top:1.6rem; background:var(--surface); border-radius:var(--radius); padding:clamp(1.1rem,2vw,1.6rem)}
+  .demo-label{font-weight:550; color:var(--brand-bright); font-size:.9rem; margin-bottom:1rem; display:flex; align-items:center; gap:.5rem}
+  .demo-label::before{content:"✦"; font-size:.85em}
+  .demo-hint{margin-top:1rem; color:var(--ink-soft); font-size:.88rem}
+  .demo-hint em{color:var(--brand-bright)}
+
+  /* ---------- Demo: fracciones ---------- */
+  .frac-controls{display:flex; align-items:center; gap:1rem; margin-bottom:1.1rem; flex-wrap:wrap}
+  .demo-q{color:var(--ink-soft); font-size:.92rem}
+  .seg-btns{display:flex; gap:.4rem}
+  .seg-btns button{all:unset; cursor:pointer; padding:.4rem .95rem; border-radius:999px; background:var(--surface-2); color:var(--ink-soft); font-weight:600; transition:all .2s}
+  .seg-btns button.active{background:var(--brand); color:oklch(0.99 0 0)}
+  .frac-stage{display:flex; align-items:center; gap:clamp(1.2rem,3vw,2.2rem); flex-wrap:wrap}
+  #pastel{width:min(200px,42vw); height:auto; filter:drop-shadow(0 10px 22px oklch(0 0 0 / .4)); flex-shrink:0}
+  #pastel .slice{fill:var(--brand); stroke:var(--bg); stroke-width:2px; cursor:pointer; transition:fill .25s var(--ease), opacity .25s var(--ease)}
+  #pastel .slice:hover{fill:var(--brand-bright)}
+  #pastel .slice.removed{fill:var(--surface-2); opacity:.4}
+  #pastel .slice:focus-visible{outline:2px solid var(--brand-bright); outline-offset:-3px}
+  .frac-readout{text-align:center; min-width:8rem}
+  .frac-big{display:block; font-size:clamp(2rem,4vw,2.8rem); font-weight:800; color:var(--brand-bright); letter-spacing:-0.02em; font-variant-numeric:tabular-nums}
+  .frac-caption{color:var(--ink-soft); font-size:.88rem}
+
+  /* ---------- Demo: realidad aumentada ---------- */
+  .ra-stage{position:relative; height:clamp(160px,26vh,210px); border:1.5px dashed var(--line); border-radius:var(--radius); background:var(--surface-2); margin-bottom:1.1rem}
+  .ra-stage::before{content:"tu mesa / el campo"; position:absolute; bottom:.6rem; right:.9rem; font-size:.75rem; color:var(--ink-soft); opacity:.6}
+  .ra-hotspot{
+    all:unset; position:absolute; width:2.5rem; height:2.5rem; border-radius:50%;
+    background:var(--brand); color:oklch(0.99 0 0); display:grid; place-items:center;
+    font-weight:700; font-size:.85rem; cursor:pointer; transform:translate(-50%,-50%);
+    transition:background .2s, transform .2s var(--ease); animation:pulse 2.6s infinite;
+  }
+  .ra-hotspot:hover{transform:translate(-50%,-50%) scale(1.08)}
+  .ra-hotspot:focus-visible{outline:2px solid var(--brand-bright); outline-offset:2px}
+  .ra-hotspot.active{background:var(--brand-bright); animation:none}
+  @keyframes pulse{
+    0%{box-shadow:0 0 0 0 oklch(0.63 0.19 355 / .5)}
+    70%{box-shadow:0 0 0 16px oklch(0.63 0.19 355 / 0)}
+    100%{box-shadow:0 0 0 0 oklch(0.63 0.19 355 / 0)}
+  }
+  .ra-card{min-height:4.6rem; padding:.9rem 1.1rem; background:var(--surface-2); border-radius:10px; display:flex; flex-direction:column; justify-content:center}
+  .ra-card h3{margin-bottom:.3rem; color:var(--brand-bright)}
+
+  /* ---------- Rúbrica: interacciones ---------- */
+  .legend span, .legend-item{all:unset; cursor:pointer; display:inline-flex; align-items:center; gap:.5rem; padding:.3rem .65rem; border-radius:8px; transition:background .2s; color:var(--ink-soft); font-size:.92rem}
+  .legend-item:hover, .legend-item.active{background:var(--surface)}
+  .legend-item.active{color:var(--ink)}
+  .chart .row{cursor:pointer; border-radius:8px; padding:.2rem .5rem; margin:0 -0.5rem; transition:background .2s}
+  .chart .row:hover, .chart .row.active{background:var(--surface)}
+  .chart .seg{transition:width 1s var(--ease), opacity .25s}
+  .chart.filter-e .seg:not(.e){opacity:.18}
+  .chart.filter-b .seg:not(.b){opacity:.18}
+  .chart.filter-r .seg:not(.r){opacity:.18}
+  .insight{margin-top:1.1rem; padding:.9rem 1.15rem; background:var(--surface); border-radius:10px; color:var(--ink-soft); max-width:62rem; min-height:1.4rem}
+  .insight strong{color:var(--brand-bright)}
+
   /* ---------- Cierre ---------- */
   .links a{color:var(--brand-bright); text-decoration:none; border-bottom:1px solid oklch(0.63 0.19 355/.45)}
   .links a:hover{border-bottom-color:var(--brand-bright)}
@@ -247,6 +303,25 @@
         <div class="step"><b>4</b><p><strong>Evaluación de eficacia</strong>: la analítica del video muestra quién vio, qué respondió y dónde repitió; se complementa con comparación pre/post de comprensión.</p></div>
       </div>
     </div>
+    <div class="demo">
+      <p class="demo-label">Pruébalo — la pregunta que pausaría el video</p>
+      <div class="frac-controls">
+        <span class="demo-q">Divide el pastel en:</span>
+        <div class="seg-btns" role="group" aria-label="Número de porciones">
+          <button data-n="4">4</button>
+          <button data-n="8" class="active">8</button>
+          <button data-n="12">12</button>
+        </div>
+      </div>
+      <div class="frac-stage">
+        <svg id="pastel" viewBox="0 0 200 200" aria-hidden="false"></svg>
+        <div class="frac-readout">
+          <span class="frac-big" id="fracLabel">8/8</span>
+          <span class="frac-caption">del pastel queda</span>
+        </div>
+      </div>
+      <p class="demo-hint">Haz clic en las porciones para «retirarlas» — como la pregunta insertada del video: <em>si retiro dos porciones, ¿qué fracción queda?</em></p>
+    </div>
   </section>
 
   <!-- 5 · Formulación 2 -->
@@ -264,6 +339,17 @@
         <div class="step"><b>3</b><p><strong>Creación, no solo consumo</strong>: cada equipo arma su propia exposición aumentada para estudiantes de primaria — el creador aprende dos veces.</p></div>
         <div class="step"><b>4</b><p><strong>Evaluación de eficacia</strong>: rúbrica de comprensión conceptual antes y después, y observación del uso del vocabulario científico en las exposiciones.</p></div>
       </div>
+    </div>
+    <div class="demo">
+      <p class="demo-label">Pruébalo — así activaría el estudiante los marcadores de RA</p>
+      <div class="ra-stage" id="raStage">
+        <button class="ra-hotspot" data-i="0" style="top:24%; left:16%">01</button>
+        <button class="ra-hotspot" data-i="1" style="top:62%; left:36%">02</button>
+        <button class="ra-hotspot" data-i="2" style="top:28%; left:63%">03</button>
+        <button class="ra-hotspot" data-i="3" style="top:66%; left:84%">04</button>
+      </div>
+      <div class="ra-card" id="raCard"><p class="soft">Toca un marcador para ver su ficha aumentada.</p></div>
+      <p class="demo-hint">Cada marcador simula el punto donde la cámara del celular activaría la información en el bosque seco tropical de Tocaima.</p>
     </div>
   </section>
 
@@ -359,12 +445,13 @@
     </div>
     <p class="soft" style="max-width:62rem; margin-bottom:1.2rem">La tasa de error cayó un tercio en una sola jornada (del 21,5 % al 14,5 %, con ~30 estudiantes por sesión). El 100 % completó el módulo de condicionales y la guía PSeInt. Usabilidad de Java X (SUS adaptado): <strong style="color:var(--ink)">63/100</strong> — aceptable, con margen: valoran practicar desde el celular con retroalimentación inmediata; piden menos anuncios y mejor escritura de código en pantalla pequeña.</p>
     <div class="kpis" id="kpis"></div>
-    <div class="legend">
-      <span><i class="dot" style="background:var(--ok-e)"></i>Excelente</span>
-      <span><i class="dot" style="background:var(--ok-b)"></i>Bueno</span>
-      <span><i class="dot" style="background:var(--ok-r)"></i>Regular</span>
+    <div class="legend" id="legend">
+      <button class="legend-item" data-level="e"><i class="dot" style="background:var(--ok-e)"></i>Excelente</button>
+      <button class="legend-item" data-level="b"><i class="dot" style="background:var(--ok-b)"></i>Bueno</button>
+      <button class="legend-item" data-level="r"><i class="dot" style="background:var(--ok-r)"></i>Regular</button>
     </div>
-    <div class="chart" id="chart" role="img" aria-label="Resultados de la rúbrica por criterio"></div>
+    <div class="chart" id="chart" role="img" aria-label="Resultados de la rúbrica por criterio — clic en un criterio o en una leyenda para explorar"></div>
+    <p class="insight" id="insight">Toca un criterio de la lista para ver el detalle, o filtra por nivel con la leyenda.</p>
     <div class="pending" id="pending" hidden>
       <p><strong style="color:var(--ink)">Rúbrica oficial en recolección.</strong> La rúbrica de 9 criterios del módulo fue enviada a estudiantes y docentes mediante formulario digital; el gráfico por criterio aparece aquí automáticamente al consolidar las respuestas.</p>
     </div>
@@ -478,6 +565,74 @@ addEventListener('touchend', e => {
   x0 = null;
 }, {passive:true});
 
+/* ---------- Demo: parte el pastel (fracciones) ---------- */
+function polar(cx, cy, r, deg){
+  const a = (deg - 90) * Math.PI / 180;
+  return [cx + r * Math.cos(a), cy + r * Math.sin(a)];
+}
+function sliceArc(cx, cy, r, a0, a1){
+  const [x1, y1] = polar(cx, cy, r, a1);
+  const [x2, y2] = polar(cx, cy, r, a0);
+  const large = a1 - a0 <= 180 ? 0 : 1;
+  return `M ${cx} ${cy} L ${x1} ${y1} A ${r} ${r} 0 ${large} 0 ${x2} ${y2} Z`;
+}
+function gcd(a, b){ return b ? gcd(b, a % b) : a; }
+
+let fracN = 8, fracRemoved = new Set();
+function buildPastel(n){
+  fracN = n; fracRemoved = new Set();
+  const svg = document.getElementById('pastel');
+  if (!svg) return;
+  svg.innerHTML = '';
+  const step = 360 / n;
+  for (let idx = 0; idx < n; idx++){
+    const path = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+    path.setAttribute('d', sliceArc(100, 100, 92, idx * step, (idx + 1) * step));
+    path.setAttribute('class', 'slice');
+    path.dataset.idx = idx;
+    path.setAttribute('tabindex', '0');
+    path.setAttribute('role', 'button');
+    path.setAttribute('aria-label', `Porción ${idx + 1} de ${n}`);
+    path.addEventListener('click', () => toggleSlice(idx));
+    path.addEventListener('keydown', e => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); toggleSlice(idx); } });
+    svg.appendChild(path);
+  }
+  updateFracLabel();
+}
+function toggleSlice(idx){
+  const path = document.querySelector(`#pastel path[data-idx="${idx}"]`);
+  if (fracRemoved.has(idx)) { fracRemoved.delete(idx); path.classList.remove('removed'); }
+  else { fracRemoved.add(idx); path.classList.add('removed'); }
+  updateFracLabel();
+}
+function updateFracLabel(){
+  const label = document.getElementById('fracLabel');
+  if (!label) return;
+  const remain = fracN - fracRemoved.size;
+  if (remain === 0) { label.textContent = '0'; return; }
+  const g = gcd(remain, fracN);
+  label.textContent = (g > 1 && g < fracN) ? `${remain}/${fracN} = ${remain / g}/${fracN / g}` : `${remain}/${fracN}`;
+}
+document.querySelectorAll('.seg-btns button').forEach(b => b.onclick = () => {
+  document.querySelectorAll('.seg-btns button').forEach(x => x.classList.toggle('active', x === b));
+  buildPastel(+b.dataset.n);
+});
+if (document.getElementById('pastel')) buildPastel(8);
+
+/* ---------- Demo: marcadores de realidad aumentada ---------- */
+const RA_DATA = [
+  { n: 'Ceiba barrigona', f: 'Árbol nativo del bosque seco: almacena agua en su tronco abultado para resistir meses sin lluvia.' },
+  { n: 'Guayacán', f: 'Florece con flores amarillas intensas al inicio de la época seca — uno de los símbolos del bosque seco tropical colombiano.' },
+  { n: 'Iguana verde', f: 'Reptil común del bosque seco tropical; se asolea sobre ramas y rocas para regular su temperatura corporal.' },
+  { n: 'Colibrí', f: 'Poliniza las flores del bosque seco; su vuelo estacionario es un ejemplo clásico de biomecánica animal.' },
+];
+document.querySelectorAll('.ra-hotspot').forEach(h => h.addEventListener('click', () => {
+  document.querySelectorAll('.ra-hotspot').forEach(x => x.classList.remove('active'));
+  h.classList.add('active');
+  const d = RA_DATA[+h.dataset.i];
+  document.getElementById('raCard').innerHTML = `<h3>${d.n}</h3><p class="soft">${d.f}</p>`;
+}));
+
 /* ---------- Tabs ---------- */
 document.querySelectorAll('.tabs [role="tab"]').forEach(t => t.onclick = () => {
   const tabs = t.closest('.tabs');
@@ -510,7 +665,7 @@ function drawChart(){
   if (!drawn){
     chart.innerHTML = RUBRICA.criterios.map(([lbl, v], k) => {
       const n = v[0] + v[1] + v[2] || 1;
-      return `<div class="row"><span class="lbl">${lbl}</span>
+      return `<div class="row" data-idx="${k}" tabindex="0" role="button"><span class="lbl">${lbl}</span>
         <div class="bar" aria-label="${lbl}: ${v[0]} excelente, ${v[1]} bueno, ${v[2]} regular">
           <div class="seg e" data-w="${v[0]/n*100}">${v[0] || ''}</div>
           <div class="seg b" data-w="${v[1]/n*100}">${v[1] || ''}</div>
@@ -518,10 +673,39 @@ function drawChart(){
         </div></div>`;
     }).join('');
     drawn = true;
+
+    const insight = document.getElementById('insight');
+    const showInsight = (row) => {
+      chart.querySelectorAll('.row').forEach(r => r.classList.toggle('active', r === row));
+      const [lbl, v] = RUBRICA.criterios[+row.dataset.idx];
+      const n = v[0] + v[1] + v[2] || 1;
+      const custom = RUBRICA_INSIGHTS[lbl];
+      const generico = `${Math.round((v[0]+v[1])/n*100)}% lo valoró Bueno o Excelente (${v[0]} Excelente · ${v[1]} Bueno${v[2] ? ` · ${v[2]} Regular` : ''}).`;
+      insight.innerHTML = `<strong>${lbl}:</strong> ${custom || generico}`;
+    };
+    chart.querySelectorAll('.row').forEach(row => {
+      row.addEventListener('click', () => showInsight(row));
+      row.addEventListener('keydown', e => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); showInsight(row); } });
+    });
+
+    document.querySelectorAll('.legend-item').forEach(btn => btn.addEventListener('click', () => {
+      const lvl = btn.dataset.level;
+      const alreadyOn = chart.classList.contains('filter-' + lvl);
+      chart.className = 'chart';
+      document.querySelectorAll('.legend-item').forEach(b => b.classList.remove('active'));
+      if (!alreadyOn) { chart.classList.add('filter-' + lvl); btn.classList.add('active'); }
+    }));
   }
   requestAnimationFrame(() => requestAnimationFrame(() =>
     chart.querySelectorAll('.seg').forEach(s => s.style.width = s.dataset.w + '%')));
 }
+const RUBRICA_INSIGHTS = {
+  'Tecnología empleada': 'el criterio mejor valorado — 9 de 18 lo calificaron Excelente y ninguno Regular. La integración Java X + Blooket + blog funcionó con solidez técnica ante sus usuarios reales.',
+  'Interactividad': 'el que menos «Excelente» recibió (5 de 18), aunque nadie lo calificó Regular. El margen de mejora está en abrir más espacios de participación durante la clase.',
+  'Usabilidad': 'coincide con la encuesta de experiencia (SUS 63/100): bien valorada, con fricciones puntuales como los anuncios de la app gratuita.',
+  'Accesibilidad': 'su única valoración «Regular» refleja la desigualdad real de dispositivos — algunos estudiantes comparten celular en clase.',
+  'Valor agregado': 'su valoración «Regular» aislada es consistente con la recomendación abierta de incorporar más imágenes y videos al recurso.',
+};
 function pctPositivo(){
   let p = 0, t = 0;
   RUBRICA.criterios.forEach(([,v]) => { p += v[0] + v[1]; t += v[0] + v[1] + v[2]; });
